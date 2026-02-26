@@ -1,0 +1,97 @@
+{
+  "name": "elf-explorer",
+  "displayName": "ELF Explorer",
+  "description": "Explore ELF binary file structures with hex view and structure sidebar",
+  "version": "0.2.0",
+  "publisher": "elf-explorer",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": ["Programming Languages", "Other"],
+  "activationEvents": [
+    "onLanguage:elf",
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "elf",
+        "aliases": ["ELF Binary"],
+        "extensions": [".elf", ".so", ".o", ".out", ".ko", ".axf"],
+        "icon": {
+          "light": "./icon.png",
+          "dark": "./icon.png"
+        }
+      }
+    ],
+    "customEditors": [
+      {
+        "viewType": "elfExplorer.hexView",
+        "displayName": "ELF Hex View",
+        "selector": [
+          { "filenamePattern": "*.elf" },
+          { "filenamePattern": "*.so" },
+          { "filenamePattern": "*.o" },
+          { "filenamePattern": "*.out" },
+          { "filenamePattern": "*.ko" },
+          { "filenamePattern": "*.axf" }
+        ],
+        "priority": "default"
+      },
+      {
+        "viewType": "elfExplorer.hexView",
+        "displayName": "ELF Hex View",
+        "selector": [
+          { "filenamePattern": "*" }
+        ],
+        "priority": "option"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "elf-explorer-sidebar",
+          "title": "ELF Explorer",
+          "icon": "$(file-binary)"
+        }
+      ]
+    },
+    "views": {
+      "elf-explorer-sidebar": [
+        {
+          "id": "elfExplorer",
+          "name": "ELF Structure"
+        }
+      ]
+    },
+    "configurationDefaults": {
+      "workbench.hover.delay": 300
+    },
+    "commands": [
+      {
+        "command": "elf-explorer.editValue",
+        "title": "Edit Value",
+        "icon": "$(edit)"
+      }
+    ],
+    "menus": {
+      "view/item/context": [
+        {
+          "command": "elf-explorer.editValue",
+          "when": "view == elfExplorer && viewItem == editable"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "package": "vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "@types/node": "^18.0.0",
+    "typescript": "^5.3.0",
+    "@vscode/vsce": "^3.0.0"
+  }
+}
