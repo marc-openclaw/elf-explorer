@@ -49,10 +49,17 @@ jobs:
           name: extension-vsix
 
       - name: Publish to Open VSX
-        continue-on-error: true
         run: |
           npm install -g ovsx
-          ovsx publish *.vsix -p ${{ secrets.OVSX_PAT }} || echo "Already published or failed, continuing..."
+          OUTPUT=$(ovsx publish *.vsix -p ${{ secrets.OVSX_PAT }} 2>&1) || EXIT_CODE=$?
+          echo "$OUTPUT"
+          if echo "$OUTPUT" | grep -q "is already published"; then
+            echo "✅ Extension already published, continuing..."
+            exit 0
+          elif [ -n "$EXIT_CODE" ]; then
+            echo "❌ Publish failed with error"
+            exit $EXIT_CODE
+          fi
 
   publish-vscode:
     runs-on: ubuntu-latest
@@ -72,7 +79,14 @@ jobs:
           name: extension-vsix
 
       - name: Publish to VS Code Marketplace
-        continue-on-error: true
         run: |
           npm install -g @vscode/vsce
-          vsce publish -p ${{ secrets.VSCE_PAT }} || echo "Already published or failed, continuing..."
+          OUTPUT=$(vsce publish -p ${{ secrets.VSCE_PAT }} 2>&1) || EXIT_CODE=$?
+          echo "$OUTPUT"
+          if echo "$OUTPUT" | grep -qi "already\|exists"; then
+            echo "✅ Extension already published, continuing..."
+            exit 0
+          elif [ -n "$EXIT_CODE" ]; then
+            echo "❌ Publish failed with error"
+            exit $EXIT_CODE
+          fi
