@@ -1,4 +1,4 @@
-name: Publish to Open VSX
+name: Publish to Open VSX and VS Code Marketplace
 
 on:
   push:
@@ -35,3 +35,8 @@ jobs:
         run: |
           npm install -g ovsx
           ovsx publish *.vsix -p ${{ secrets.OVSX_PAT }}
+
+      - name: Publish to VS Code Marketplace
+        run: |
+          npm install -g @vscode/vsce
+          vsce publish -p ${{ secrets.VSCE_PAT }}
