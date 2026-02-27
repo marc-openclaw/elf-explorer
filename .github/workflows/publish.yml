@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -31,12 +31,48 @@ jobs:
           name: extension-vsix
           path: '*.vsix'
 
+  publish-openvsx:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Download VSIX artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: extension-vsix
+
       - name: Publish to Open VSX
+        continue-on-error: true
         run: |
           npm install -g ovsx
-          ovsx publish *.vsix -p ${{ secrets.OVSX_PAT }}
+          ovsx publish *.vsix -p ${{ secrets.OVSX_PAT }} || echo "Already published or failed, continuing..."
+
+  publish-vscode:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Download VSIX artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: extension-vsix
 
       - name: Publish to VS Code Marketplace
+        continue-on-error: true
         run: |
           npm install -g @vscode/vsce
-          vsce publish -p ${{ secrets.VSCE_PAT }}
+          vsce publish -p ${{ secrets.VSCE_PAT }} || echo "Already published or failed, continuing..."
