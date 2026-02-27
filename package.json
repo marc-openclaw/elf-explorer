@@ -4,6 +4,10 @@
   "description": "Explore ELF binary file structures with hex view and structure sidebar",
   "version": "0.2.0",
   "publisher": "marc-openclaw",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marc-openclaw/elf-explorer.git"
+  },
   "engines": {
     "vscode": "^1.80.0"
   },
