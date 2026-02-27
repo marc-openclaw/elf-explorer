@@ -3,7 +3,7 @@
   "displayName": "ELF Explorer",
   "description": "Explore ELF binary file structures with hex view and structure sidebar",
   "version": "0.2.0",
-  "publisher": "elf-explorer",
+  "publisher": "marc-openclaw",
   "engines": {
     "vscode": "^1.80.0"
   },
